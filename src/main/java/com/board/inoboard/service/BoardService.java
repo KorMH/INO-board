@@ -2,6 +2,7 @@ package com.board.inoboard.service;
 
 import com.board.inoboard.dto.BoardRequestDto;
 import com.board.inoboard.dto.BoardResponseDto;
+import com.board.inoboard.dto.DeleteBoardDto;
 import com.board.inoboard.entity.Board;
 import com.board.inoboard.repository.BoardRepository;
 import org.springframework.stereotype.Service;
@@ -35,23 +36,34 @@ public class BoardService {
     }
 
     @Transactional
-    public Long updateBoard(Long id, BoardRequestDto requestDto) {
+    public BoardResponseDto updateBoard(Long id, BoardRequestDto requestDto) {
 
         // 해당 메모가 DB에 존재하는지 확인
         Board board = findboard(id);
-        // board 내용 수정
-        board.update(requestDto);
-        return id;
 
+        BoardResponseDto ResponseDto = new BoardResponseDto(board);
+        // board 내용 수정
+        if(requestDto.getPassword().equals(board.getPassword())){
+            board.update(requestDto);
+            return ResponseDto;
+        } else{
+            return ResponseDto;
+        }
     }
 
 
-    public Long deleteBoard(Long id) {
+    public DeleteBoardDto deleteBoard(Long id, BoardRequestDto requestDto) {
         // 해당 메모가 DB에 존재하는지 확인
         Board board = findboard(id);
+        DeleteBoardDto deleteBoardDto = new DeleteBoardDto();
         // board삭제
-        boardRepository.delete(board);
-        return id;
+        if(requestDto.getPassword().equals(board.getPassword())) {
+            boardRepository.delete(board);
+            deleteBoardDto.setMsg("success");
+        }else{
+            deleteBoardDto.setMsg("fail");
+        }
+        return deleteBoardDto;
     }
 
     private Board findboard(Long id){

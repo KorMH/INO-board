@@ -2,6 +2,7 @@ package com.board.inoboard.controller;
 
 import com.board.inoboard.dto.BoardRequestDto;
 import com.board.inoboard.dto.BoardResponseDto;
+import com.board.inoboard.dto.DeleteBoardDto;
 import com.board.inoboard.service.BoardService;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,13 +31,13 @@ public class BoardController {
 
 
     @PutMapping("/board/{id}")
-    public Long updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto) {
+    public BoardResponseDto updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto) {
         return boardService.updateBoard(id,requestDto);
     }
 
     @DeleteMapping("/board/{id}")
-    public Long deleteBoard(@PathVariable Long id) {
-        return boardService.deleteBoard(id);
+    public DeleteBoardDto deleteBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto){
+        return boardService.deleteBoard(id, requestDto);
     }
 
 }
